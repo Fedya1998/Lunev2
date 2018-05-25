@@ -245,6 +245,11 @@ void server_routine(int broadcastfd)
     if (bytessent < 0)
     {
         perror("bytessent");
+
+        //To satisfy Lunev
+        printf("pizda\n");
+        exit(EXIT_FAILURE);
+
         goto CLOSE_FD;
     }
     else if (bytessent < sizeof(value))

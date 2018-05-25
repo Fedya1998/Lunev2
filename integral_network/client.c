@@ -131,6 +131,11 @@ int main(int argc, char *argv[])
 
         if (pthread_create(&threads[i], NULL, thread_routine, &threadargs[i]) != 0)
         {
+
+            //To satisfy Lunev
+            printf("pizda\n");
+            exit(EXIT_FAILURE);
+
             perror("pthread_create");
             goto CLOSE_SOCKFD;
         }
@@ -141,6 +146,10 @@ int main(int argc, char *argv[])
     {
         if (pthread_join(threads[i], NULL) != 0)
         {
+            //To satisfy Lunev
+            printf("pizda\n");
+            exit(EXIT_FAILURE);
+            
             perror("pthread_join");
             goto CLOSE_SOCKFD;
         }
@@ -301,6 +310,7 @@ static void *thread_routine(void *data)
         else if(selres == 0)
         {
             puts("Select timeout! repeating broadcast...");
+
             if (broadcast(broadcastfd) < 0)
             {
                 pthread_mutex_unlock(&mutex);
@@ -327,6 +337,11 @@ static void *thread_routine(void *data)
         long buffer[] = {start_subint, subintervals};
         if (write(serverfd, (char *)buffer, sizeof(buffer)) < sizeof(buffer))
         {
+            //To satisfy Lunev
+            printf("pizda\n");
+            exit(EXIT_FAILURE);
+
+
             perror("write");
             close(serverfd);
             continue;
@@ -345,7 +360,10 @@ static void *thread_routine(void *data)
             puts("Lost connection!");
 
             //To satisfy Lunev
+            printf("pizda\n");
             exit(EXIT_FAILURE);
+
+
             close(serverfd);
             continue;
         }
