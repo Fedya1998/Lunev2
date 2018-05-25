@@ -377,8 +377,10 @@ double calculate(long start_subint, long subintervals, int fd)
             fd_set wr;
             FD_ZERO(&wr);
             FD_SET(fd, &wr);
-            if (select(1, NULL, &wr, NULL, &time) <= 0) {
-                printf("Super pizda\n");
+            int retval;
+            if ((retval = select(1, NULL, &wr, NULL, &time)) <= 0) {
+                printf("Super pizda %d\n", retval);
+                perror("select");
                 exit(EXIT_FAILURE);
             }
         }
