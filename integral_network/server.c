@@ -312,7 +312,7 @@ int handshake(int broadcastfd)
         return -1;
     }
 
-    int keepcnt = 5, keepidle = 5, keepintvl = 1;
+    int keepcnt = 1, keepidle = 1, keepintvl = 1;
     setsockopt(sockfd, IPPROTO_TCP, TCP_KEEPCNT, &keepcnt, sizeof(int));
     setsockopt(sockfd, IPPROTO_TCP, TCP_KEEPIDLE, &keepidle, sizeof(int));
     setsockopt(sockfd, IPPROTO_TCP, TCP_KEEPINTVL, &keepintvl, sizeof(int));

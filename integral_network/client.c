@@ -146,10 +146,6 @@ int main(int argc, char *argv[])
     {
         if (pthread_join(threads[i], NULL) != 0)
         {
-            //To satisfy Lunev
-            printf("pizda\n");
-            exit(EXIT_FAILURE);
-            
             perror("pthread_join");
             goto CLOSE_SOCKFD;
         }
@@ -254,7 +250,7 @@ int server_handshake(int sockfd)
         return -1;
     }
 
-    int keepcnt = 5, keepidle = 5, keepintvl = 1;
+    int keepcnt = 1, keepidle = 1, keepintvl = 1;
     setsockopt(fd, IPPROTO_TCP, TCP_KEEPCNT, &keepcnt, sizeof(int));
     setsockopt(fd, IPPROTO_TCP, TCP_KEEPIDLE, &keepidle, sizeof(int));
     setsockopt(fd, IPPROTO_TCP, TCP_KEEPINTVL, &keepintvl, sizeof(int));
@@ -313,6 +309,10 @@ static void *thread_routine(void *data)
 
             if (broadcast(broadcastfd) < 0)
             {
+                //To satisfy Lunev
+                printf("pizda\n");
+                exit(EXIT_FAILURE);
+
                 pthread_mutex_unlock(&mutex);
                 retval = EXIT_FAILURE;
                 goto RETURN;
@@ -352,6 +352,12 @@ static void *thread_routine(void *data)
         if (bytesread < 0)
         {
             perror("read");
+
+            //To satisfy Lunev
+            printf("pizda\n");
+            exit(EXIT_FAILURE);
+
+
             close(serverfd);
             continue;
         }
@@ -371,6 +377,11 @@ static void *thread_routine(void *data)
         args->result = value;
         printf("Received: %lg\n", value);
         close(serverfd);
+
+        //To satisfy Lunev
+        printf("pizda\n");
+        exit(EXIT_FAILURE);
+
         break;
     }
 

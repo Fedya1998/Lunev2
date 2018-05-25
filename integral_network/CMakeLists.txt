@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.10)
+project(integral_network)
+include_directories("/home/fedya/Рабочий стол/my_include")
+set(CMAKE_C_STANDARD 11)
+set(SOURCE_FILES server.c client.c common.c)
+add_executable(integral_network ${SOURCE_FILES})
+target_link_libraries(integral_network m)
