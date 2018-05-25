@@ -32,7 +32,7 @@ static void server_routine(int broadcastfd);
 static void *thread_routine(void *data);
 static int handshake(int broadcastfd);
 static double f(double x);
-static double calculate(long start_subint, long subintervals);
+static double calculate(long start_subint, long subintervals, int fd);
 static void *fake_thread(void *data);
 
 int main(int argc, char *argv[])
@@ -239,7 +239,7 @@ void server_routine(int broadcastfd)
     }
 
     puts("Calculating...");
-    double value = calculate(argsbuf[0], argsbuf[1]);
+    double value = calculate(argsbuf[0], argsbuf[1], fd);
     printf("Calculated value: %lg\n\n", value);
     ssize_t bytessent = write(fd, &value, sizeof(value));
     if (bytessent < 0)
@@ -361,7 +361,7 @@ double f(double x)
     return (2 - x * x) / (4 + x);
 }
 
-double calculate(long start_subint, long subintervals)
+double calculate(long start_subint, long subintervals, int fd)
 {
     double start = START + STEP * start_subint;
     double end = START + STEP * (start_subint + subintervals);
@@ -371,6 +371,17 @@ double calculate(long start_subint, long subintervals)
     for (long i = 1; i < subintervals; i++)
     {
         value += f(start + STEP * i);
+
+        if (i % 1000 == 0){
+            struct timeval time = {1, 0};
+            fd_set wr;
+            FD_ZERO(&wr);
+            FD_SET(fd, &wr);
+            if (select(1, NULL, &wr, NULL, &time) <= 0) {
+                printf("Super pizda\n");
+                exit(EXIT_FAILURE);
+            }
+        }
     }
     value *= STEP;
 
