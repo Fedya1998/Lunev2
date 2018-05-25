@@ -239,13 +239,16 @@ void server_routine(int broadcastfd)
     }
 
     puts("Calculating...");
+
+
+    setfd_nonblock(fd);
     double value = calculate(argsbuf[0], argsbuf[1], fd);
+    setfd_block(fd);
     printf("Calculated value: %lg\n\n", value);
     ssize_t bytessent = write(fd, &value, sizeof(value));
     if (bytessent < 0)
     {
         perror("bytessent");
-
         //To satisfy Lunev
         printf("pizda\n");
         exit(EXIT_FAILURE);
@@ -368,19 +371,15 @@ double calculate(long start_subint, long subintervals, int fd)
     printf("Start: %lg, end: %lg\n", start, end);
 
     double value = (f(start) + f(end)) / 2;
+
     for (long i = 1; i < subintervals; i++)
     {
         value += f(start + STEP * i);
 
         if (i % 1000 == 0){
-            struct timeval time = {1, 0};
-            fd_set wr;
-            FD_ZERO(&wr);
-            FD_SET(fd, &wr);
-            int retval;
-            if ((retval = select(1, NULL, &wr, NULL, &time)) <= 0) {
-                printf("Super pizda %d\n", retval);
-                perror("select");
+            char a;
+            if (!read(fd, &a, 1)){
+                printf("Super pizda\n");
                 exit(EXIT_FAILURE);
             }
         }
